@@ -62,4 +62,8 @@ class KDTree:
 
         return False
     
-    
+    def delete(self):
+        pass
+
+    def nearest(self):
+        pass
