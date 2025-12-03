@@ -27,7 +27,7 @@ class TestKDTInt(unittest.TestCase):
         for value in arr:
             self.assertIn(value, kdt)
 
-"""
+
 class TestKDTString(unittest.TestCase):
     def test_kdt_string(self):
         arr = [["kiwi", "banana"], ["cranberry", "pineapple"], ["cheese", "pepperoni"], ["s'mores", "spinach"], ["onion", "tomato"]]
@@ -52,6 +52,7 @@ class TestKDTString(unittest.TestCase):
 
         for value in arr:
             self.assertIn(value, kdt2)
-"""
+
+
 if __name__ == "__main__":
     unittest.main()

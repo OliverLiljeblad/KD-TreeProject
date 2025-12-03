@@ -1,6 +1,6 @@
-#KD-TREE PROJECT
-#Authors: Micki Eustache
-# delete, _delete, copy_point, and find_min copied from https://www.geeksforgeeks.org/dsa/deletion-in-k-dimensional-tree/
+# KD-TREE PROJECT
+# Authors: Micki Eustache
+# Debugged with ChatGPT
 
 class KDTNode:
     def __init__(self, value):
@@ -69,46 +69,99 @@ class KDTree:
         return False
     
     def search(self, value):
-        pass
+        current = self.root
+        depth = 0
+        cd = depth % self.k
+
+        while value != current.value:
+            if value[cd] < current.value[cd]:
+                current = current.left
+            else:
+                current = current.right
+
+        return current
     
     def delete(self, value):
+        self.root = self._delete(self.root, value, 0)
         self.count -= 1
-        return self._delete(self.root, value, 0)
     
     def _delete(self, current, value, depth):
-        # Return none if node not found
+        print(f"\n\n===========Deleting: {value} at depth {depth}==============")
+        print(f"Current: {current.value}")
+        # Return none if node not found        
         if not current:
+            return None
+
+        cd = depth % self.k
+        print(f"CD: {cd}")
+
+        # Traverse tree until target node is found
+        if current.value[cd] > value[cd]:
+            print(f"111 Current ({current.value}) left was prev: {current.left.value}")
+            current.left = self._delete(current.left, value, depth + 1)
+            if current.left is not None:
+                print(f"111 Current ({current.value}) left is now: {current.left.value}")
+            else: 
+                print(f"111 Current ({current.value}) left is now: {current.left}")
+        elif current.value[cd] < value[cd]:
+            print(f"118 Current ({current.value}) right was prev: {current.right.value}")
+            current.right = self._delete(current.right, value, depth + 1)
+            if current.right is not None:
+                print(f"118 Current ({current.value}) right is now: {current.right.value}")
+            else: 
+                print(f"118 Current ({current.value}) right is now: {current.right}")
+        else:
+            print("Target node found")
+            # Target node found
+            if current.left is None and current.right is None:
+                print("No children")
+                return None
+            # Only right child(ren)
+            elif current.left is None:
+                print(f"Returning right child: {current.right.value}")
+                return current.right
+            # Only left child(ren)
+            elif current.right is None:
+                print(f"Returning left child: {current.left.value}")
+                return current.left
+            # Has both left and right chidren
+            else:
+                print("2 children")
+                axis = depth % self.k
+                temp = self.find_min(current.right, axis, depth + 1)
+                print(f"Minimum of right subtree: {temp.value}")
+                print(f"Current ({current.value}) is now the min: {temp.value}")
+                current.value = temp.value[:]
+                print(f"145 Current ({current.value}) right was prev: {current.right.value}")
+                current.right = self._delete(current.right, temp.value, depth + 1)
+                if current.right is not None:
+                    print(f"145 Current ({current.value}) right is now: {current.right.value}")
+                else: 
+                    print(f"145 Current ({current.value}) right is now: {current.right}")
+
+        print("EXIT ===================================================")
+        return current
+
+    # Copied from ChatGPT
+    def find_min(self, node, axis, depth):
+        if node is None:
             return None
         
         cd = depth % self.k
 
-        # Traverse tree until target node is found
-        if current.value[cd] > value[cd]:
-            current.left = self._delete(current.left, value, depth + 1)
-        elif current.value[cd] < value[cd]:
-            current.right = self._delete(current.right, value, depth + 1)
-        else:
-            # Target node found
-            # Only right child(ren)
-            if current.left is None:
-                return current.right
-            # Only left child(ren)
-            elif current.right is None:
-                return current.left
-            # Has both left and right chidren
-            else:
-                temp = self.find_min(current.right, depth + 1)
-                current.value = temp.value
-                current.right = self._delete(current.right, temp.value, depth + 1)
+        if cd == axis:
+            if node.left is None:
+                return node
+            return self.find_min(node.left, axis, depth + 1)
 
-        return current
+        left_min = self.find_min(node.left, axis, depth + 1)
+        right_min = self.find_min(node.right, axis, depth + 1)
 
-    def find_min(self, root, d):
-        pass
+        best = node
+        for candidate in (left_min, right_min):
+            if candidate and candidate.value[axis] < best.value[axis]:
+                best = candidate
+        return best
 
     def nearest(self):
         pass
-
-    def copy_point(self, point1, point2):
-        for i in range(self.k):
-            point1[i] = point2[i]
