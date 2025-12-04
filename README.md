@@ -10,3 +10,4 @@ Learning materials:
 * https://www.youtube.com/watch?v=KOhkC0sdmNc
 * https://www.youtube.com/watch?v=tyVtJX48ZRs&list=LL
 * https://www.geeksforgeeks.org/dsa/deletion-in-k-dimensional-tree/
+* https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/kdtrees.pdf
