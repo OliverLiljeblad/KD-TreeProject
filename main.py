@@ -64,9 +64,7 @@ class KDTree:
                     current = current.left
             else:
                     current = current.right
-
             depth += 1
-
         return False
     
     def delete(self, value):
@@ -141,12 +139,14 @@ class KDTree:
             return best_point, best_dist
 
         current_dist = self.distance(value, node.value)
+        # Update point and distance if lower distance has been found
         if current_dist < best_dist:
-            best_dist = current_dist
             best_point = node
+            best_dist = current_dist
         
         cd = depth % self.k
 
+        # Determine near and far points
         if value[cd] < node.value[cd]:
             near = node.left
             far = node.right
@@ -156,6 +156,7 @@ class KDTree:
         
         best_point, best_dist = self._search(near, value, depth + 1, best_point, best_dist)
         
+        # Determine if closer points could be in neighboring boundary boxes
         plane_dist = abs(value[cd] - node.value[cd])
         if plane_dist < best_dist:
             best_point, best_dist = self._search(far, value, depth + 1, best_point, best_dist)
